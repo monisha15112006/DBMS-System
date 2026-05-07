@@ -1,0 +1,33 @@
+SET NULL "NULL";
+SET FEEDBACK OFF;
+SET ECHO OFF;
+SET HEADING OFF;
+SET WRAP OFF;
+SET LINESIZE 10000;
+SET TAB OFF;
+SET PAGES 0;
+SET DEFINE OFF;
+
+/*
+Enter your query here.
+Please append a semicolon ";" at the end of the query and enter your query in a single line to avoid error.
+*/
+SELECT 
+    W.ID, 
+    P.AGE, 
+    W.COINS_NEEDED, 
+    W.POWER
+FROM WANDS W
+JOIN WANDS_PROPERTY P ON W.CODE = P.CODE
+WHERE P.IS_EVIL = 0 
+  AND W.COINS_NEEDED = (
+      SELECT MIN(W1.COINS_NEEDED)
+      FROM WANDS W1
+      JOIN WANDS_PROPERTY P1 ON W1.CODE = P1.CODE
+      WHERE P1.IS_EVIL = 0 
+        AND W1.POWER = W.POWER 
+        AND P1.AGE = P.AGE
+  )
+ORDER BY W.POWER DESC, P.AGE DESC;
+
+exit;

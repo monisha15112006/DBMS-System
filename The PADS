@@ -1,0 +1,44 @@
+SET NULL "NULL";
+SET FEEDBACK OFF;
+SET ECHO OFF;
+SET HEADING OFF;
+SET WRAP OFF;
+SET LINESIZE 10000;
+SET TAB OFF;
+SET PAGES 0;
+SET DEFINE OFF;
+SET SERVEROUTPUT ON;
+
+DECLARE
+   
+    CURSOR c_names IS
+        SELECT Name, Occupation
+        FROM OCCUPATIONS
+        ORDER BY Name;
+
+
+    CURSOR c_count IS
+        SELECT Occupation, COUNT(*) AS cnt
+        FROM OCCUPATIONS
+        GROUP BY Occupation
+        ORDER BY cnt, Occupation;
+
+BEGIN
+
+    FOR rec IN c_names LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            rec.Name || '(' || SUBSTR(rec.Occupation,1,1) || ')'
+        );
+    END LOOP;
+
+
+    FOR rec2 IN c_count LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            'There are a total of ' || rec2.cnt || ' ' ||
+            LOWER(rec2.Occupation) || 's.'
+        );
+    END LOOP;
+
+END;
+/
+exit;

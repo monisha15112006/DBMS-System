@@ -1,0 +1,37 @@
+DECLARE
+    -- Cursor to retrieve employees whose first name starts with 'A'
+    CURSOR emp_a_cur IS 
+        SELECT first_name FROM employees WHERE UPPER(first_name) LIKE 'A%';
+    
+    v_name employees.first_name%TYPE;
+BEGIN
+    -- 1. Display %ISOPEN before opening
+    IF emp_a_cur%ISOPEN THEN
+        DBMS_OUTPUT.PUT_LINE('Cursor is Open.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Cursor is Closed.');
+    END IF;
+
+    OPEN emp_a_cur;
+
+    LOOP
+        FETCH emp_a_cur INTO v_name;
+        
+        -- 2. Display %FOUND after each fetch
+        IF emp_a_cur%FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Fetched: ' || v_name || ' | %ROWCOUNT: ' || emp_a_cur%ROWCOUNT);
+        END IF;
+        
+        EXIT WHEN emp_a_cur%NOTFOUND;
+    END LOOP;
+
+    -- 3. Display final %ROWCOUNT and %NOTFOUND status
+    DBMS_OUTPUT.PUT_LINE('Total Rows Fetched: ' || emp_a_cur%ROWCOUNT);
+    
+    IF emp_a_cur%NOTFOUND THEN
+        DBMS_OUTPUT.PUT_LINE('End of cursor reached (%NOTFOUND is TRUE).');
+    END IF;
+
+    CLOSE emp_a_cur;
+END;
+/

@@ -1,0 +1,41 @@
+--cursor to count number of employees residing in ‘sivakasi’ and earning salary higher than average salary of their departments wit necessary exception handling.
+DECLARE
+    -- Cursor to find employees in Sivakasi earning more than their department average
+    CURSOR c_emp_sivakasi IS
+        SELECT e.employee_id
+        FROM employees e
+        WHERE e.city = 'Sivakasi'
+        AND e.salary > (SELECT AVG(salary) 
+                        FROM employees 
+                        WHERE department_id = e.department_id);
+    
+    v_emp_id employees.employee_id%TYPE;
+    v_count  NUMBER := 0;
+BEGIN
+    OPEN c_emp_sivakasi;
+    
+    LOOP
+        FETCH c_emp_sivakasi INTO v_emp_id;
+        EXIT WHEN c_emp_sivakasi%NOTFOUND;
+        v_count := v_count + 1;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Number of employees in Sivakasi earning above dept average: ' || v_count);
+    
+    CLOSE c_emp_sivakasi;
+
+EXCEPTION
+    WHEN CURSOR_ALREADY_OPEN THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Attempted to open an already open cursor.');
+    WHEN INVALID_CURSOR THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Attempted an operation on an invalid or closed cursor.');
+    WHEN ZERO_DIVIDE THEN
+        DBMS_OUTPUT.PUT_LINE('Error: Calculation error encountered during average processing.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An unexpected error occurred: ' || SQLERRM);
+        -- Ensure cursor is closed if open during error
+        IF c_emp_sivakasi%ISOPEN THEN
+            CLOSE c_emp_sivakasi;
+        END IF;
+END;
+/

@@ -1,0 +1,49 @@
+DECLARE
+    num       NUMBER := 153; -- The number to check
+    temp      NUMBER;
+    remainder NUMBER;
+    sum_arm   NUMBER := 0;
+    digit_cnt NUMBER;
+    is_prime  BOOLEAN := TRUE;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Analysis for Number: ' || num);
+
+    -- 1. Positive, Negative, or Zero
+    IF num > 0 THEN DBMS_OUTPUT.PUT_LINE('- Positive');
+    ELSIF num < 0 THEN DBMS_OUTPUT.PUT_LINE('- Negative');
+    ELSE DBMS_OUTPUT.PUT_LINE('- Zero');
+    END IF;
+
+    -- 2. Even or Odd
+    IF MOD(num, 2) = 0 THEN DBMS_OUTPUT.PUT_LINE('- Even');
+    ELSE DBMS_OUTPUT.PUT_LINE('- Odd');
+    END IF;
+
+    -- 3. Prime Check (for positive integers > 1)
+    IF num <= 1 THEN
+        is_prime := FALSE;
+    ELSE
+        FOR i IN 2..TRUNC(SQRT(ABS(num))) LOOP
+            IF MOD(num, i) = 0 THEN
+                is_prime := FALSE;
+                EXIT;
+            END IF;
+        END LOOP;
+    END IF;
+    IF is_prime THEN DBMS_OUTPUT.PUT_LINE('- Prime');
+    ELSE DBMS_OUTPUT.PUT_LINE('- Not Prime');
+    END IF;
+
+    -- 4. Armstrong Number Check (sum of cubes for 3-digit numbers)
+    temp := ABS(num);
+    WHILE temp > 0 LOOP
+        remainder := MOD(temp, 10);
+        sum_arm := sum_arm + (remainder ** 3);
+        temp := TRUNC(temp / 10);
+    END LOOP;
+
+    IF sum_arm = ABS(num) THEN DBMS_OUTPUT.PUT_LINE('- Armstrong Number');
+    ELSE DBMS_OUTPUT.PUT_LINE('- Not an Armstrong Number');
+    END IF;
+END;
+/

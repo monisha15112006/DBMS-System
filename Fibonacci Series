@@ -1,0 +1,25 @@
+DECLARE
+    -- Initialize the first two numbers of the series
+    n1      NUMBER := 0;
+    n2      NUMBER := 1;
+    next_n  NUMBER;
+    -- Define how many terms you want to print
+    terms   NUMBER := 10; 
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Fibonacci Series up to ' || terms || ' terms:');
+    
+    -- Print the first two terms manually
+    DBMS_OUTPUT.PUT_LINE(n1);
+    DBMS_OUTPUT.PUT_LINE(n2);
+    
+    -- Loop to calculate and print the remaining terms
+    FOR i IN 3..terms LOOP
+        next_n := n1 + n2;
+        DBMS_OUTPUT.PUT_LINE(next_n);
+        
+        -- Update values for the next iteration
+        n1 := n2;
+        n2 := next_n;
+    END LOOP;
+END;
+/
